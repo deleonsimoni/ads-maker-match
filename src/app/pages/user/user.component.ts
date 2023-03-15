@@ -17,45 +17,38 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.callAPI();
-
+    // this.match();
   }
 
   callAPI() {
 
-    let budget;
-    let seconds; // Quantidade de segundos da duração do anúncio a ser exibido
-    let targetAudience; // Público alvo do anúncio para ordenar os 
-    let keyWords;
+      let budget;
+      let seconds; // Quantidade de segundos da duração do anúncio a ser exibido
+      let targetAudience; // Público alvo do anúncio para ordenar os 
+      let keyWords;
 
-    let timesByBudget = this.custos.filter(e => e.value <= budget);
-    let times = timesByBudget.map(e => e.time.split(":")[0]);
-    let gradesByTime = this.grade.filter(e => times.includes(e.startTime.split(":")));
-    console.log(gradesByTime);
+      let timesByBudget = this.custos.filter(e => e.value <= budget);
+      let times = timesByBudget.map(e => e.time.split(":")[0]);
+      let gradesByTime = this.grade.filter(e => times.includes(e.startTime.split(":")));
+      console.log(gradesByTime);
 
-    this.apiService.getCanais().subscribe((res: any) => {
-      this.canais = res;
-    }, err => {
+      this.apiService.getCanais().subscribe((res: any) => {
+        this.canais = res;
+        this.apiService.getCusto().subscribe((res: any) => {
+          this.custos = res;
+          this.apiService.getGrade().subscribe((res: any) => {
+            this.grade = res;
+            this.apiService.getAudiencia().subscribe((res: any) => {
+              this.audiencia = res;
+            }, err => {
+            });
+          }, err => {
+          });
+        }, err => {
+        });
+      }, err => {
+      });
 
-    });
-
-    this.apiService.getCusto().subscribe((res: any) => {
-      this.custos = res;
-    }, err => {
-
-    });
-
-    this.apiService.getGrade().subscribe((res: any) => {
-      this.grade = res;
-    }, err => {
-
-    });
-
-    this.apiService.getAudiencia().subscribe((res: any) => {
-      this.audiencia = res;
-    }, err => {
-
-    });
-  }
+    }
 }
