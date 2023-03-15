@@ -17,16 +17,11 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.callAPI();
+    this.loadData();
     // this.match();
   }
 
-  callAPI() {
-    let budget = 60000;
-    let seconds = 10; // Quantidade de segundos da duração do anúncio a ser exibido
-    let targetAudience; // Público alvo do anúncio para ordenar os 
-    let keyWords;
-
+  loadData() {
     this.apiService.getCanais().subscribe((res: any) => {
       this.canais = res;
       this.apiService.getCusto().subscribe((res: any) => {
@@ -35,15 +30,6 @@ export class UserComponent implements OnInit {
           this.grade = res;
           this.apiService.getAudiencia().subscribe((res: any) => {
             this.audiencia = res;
-
-            console.log("Grade: ", this.grade[0])
-            console.log("Custos: ", this.custos[0])
-
-            let timesByBudget = this.custos.filter(e => e.value * seconds <= budget);
-            let times = timesByBudget.map(e => e.time.split(":")[0]);
-            console.log("Times: ", times);
-            let gradesByTime = this.grade.filter(e => times.includes(e.startTime.split(":")[0]));
-            console.log(gradesByTime);
           }, err => {
           });
         }, err => {
@@ -52,5 +38,19 @@ export class UserComponent implements OnInit {
       });
     }, err => {
     });
+  }
+
+  filter() {
+    let budget = 60000;
+    let seconds = 10; // Quantidade de segundos da duração do anúncio a ser exibido
+    let targetAudience; // Público alvo do anúncio para ordenar os 
+    let keyWords;
+    
+    console.log("Budget: ", budget);
+    console.log("Segundos: ", seconds);
+    let times = this.custos.filter(e => e.value * seconds <= budget).map(e => e.time.split(":")[0]);
+    console.log("Times: ", times);
+    let gradesByTime = this.grade.filter(e => times.includes(e.startTime.split(":")[0]));
+    console.log(gradesByTime);
   }
 }
