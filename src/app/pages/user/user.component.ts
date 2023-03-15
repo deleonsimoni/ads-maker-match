@@ -19,6 +19,7 @@ export class UserComponent implements OnInit {
   ngOnInit() {
 
     this.callAPI();
+    this.match();
 
   }
 
@@ -27,47 +28,51 @@ export class UserComponent implements OnInit {
     return resposta[0] * 3600 + resposta[1] * 60 + resposta[2];
   }
 
+  match() {
+
+    setTimeout(function () {
+
+      let budget;
+      let targetAudience;
+      let keyWords;
+
+      let timesByBudget = this.custos.filter(e => e.value <= budget);
+
+      timesByBudget.map(times => {
+        times.inicio = this.time2Seconds(times.time);
+        let tempoFim = times.time.split(":")[0] + ":59:59";
+        times.fim = this.time2Seconds(tempoFim);
+      })
+
+
+      let gradesByTime = this.grade.filter(e => this.time2Seconds(e.startTime) >= times.timeInicio && this.time2Seconds(e.startTime) <= times.timeFim);
+
+    }, 1000);
+
+  }
+
   callAPI() {
-
-    let budget;
-    let targetAudience;
-    let keyWords;
-
-    let timesByBudget = this.custos.filter(e => e.value <= budget);
-
-    timesByBudget.map(times => {
-      times.inicio = this.time2Seconds(times.time);
-      let tempoFim = times.time.split(":")[0] + ":59:59";
-      times.fim = this.time2Seconds(tempoFim);
-    })
-
-
-    let gradesByTime = this.grade.filter(e => this.time2Seconds(e.startTime) >= times.timeInicio && this.time2Seconds(e.startTime) <= times.timeFim);
-
-
 
     this.apiService.getCanais().subscribe((res: any) => {
       this.canais = res;
+      this.apiService.getCusto().subscribe((res: any) => {
+        this.custos = res;
+        this.apiService.getGrade().subscribe((res: any) => {
+          this.grade = res;
+          this.apiService.getAudiencia().subscribe((res: any) => {
+            this.audiencia = res;
+          }, err => {
+          });
+        }, err => {
+        });
+      }, err => {
+      });
     }, err => {
-
     });
 
-    this.apiService.getCusto().subscribe((res: any) => {
-      this.custos = res;
-    }, err => {
 
-    });
 
-    this.apiService.getGrade().subscribe((res: any) => {
-      this.grade = res;
-    }, err => {
 
-    });
 
-    this.apiService.getAudiencia().subscribe((res: any) => {
-      this.audiencia = res;
-    }, err => {
-
-    });
   }
 }
