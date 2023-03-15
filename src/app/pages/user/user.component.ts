@@ -22,29 +22,17 @@ export class UserComponent implements OnInit {
 
   }
 
-  time2Seconds(time) {
-    let resposta = time.split(":");
-    return resposta[0] * 3600 + resposta[1] * 60 + resposta[2];
-  }
-
   callAPI() {
 
     let budget;
-    let targetAudience;
+    let seconds; // Quantidade de segundos da duração do anúncio a ser exibido
+    let targetAudience; // Público alvo do anúncio para ordenar os 
     let keyWords;
 
     let timesByBudget = this.custos.filter(e => e.value <= budget);
-
-    timesByBudget.map(times => {
-      times.inicio = this.time2Seconds(times.time);
-      let tempoFim = times.time.split(":")[0] + ":59:59";
-      times.fim = this.time2Seconds(tempoFim);
-    })
-
-
-    let gradesByTime = this.grade.filter(e => this.time2Seconds(e.startTime) >= times.timeInicio && this.time2Seconds(e.startTime) <= times.timeFim);
-
-
+    let times = timesByBudget.map(e => e.time.split(":")[0]);
+    let gradesByTime = this.grade.filter(e => times.includes(e.startTime.split(":")));
+    console.log(gradesByTime);
 
     this.apiService.getCanais().subscribe((res: any) => {
       this.canais = res;
